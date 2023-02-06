@@ -6,6 +6,13 @@ import (
 	"net"
 )
 
+// IServer a server interface
+type IServer interface {
+	Start()
+	Stop()
+	Serve()
+}
+
 // Server module
 type Server struct {
 	// the name of server
@@ -28,7 +35,7 @@ func (s *Server) Start() {
 			return
 		}
 		// try to listen
-		listenner, err := net.ListenTCP(s.IPVersion, addr)
+		listener, err := net.ListenTCP(s.IPVersion, addr)
 		if err != nil {
 			log.Fatalf("[BubbleServer] - start error: listen to addr error\n")
 			return
@@ -36,7 +43,7 @@ func (s *Server) Start() {
 		log.Println("[BubbleServer] - start success")
 		// wait for clients
 		for {
-			conn, err := listenner.AcceptTCP()
+			conn, err := listener.AcceptTCP()
 			if err != nil {
 				log.Println("[BubbleServer] - start error: accept tcp connection error")
 				continue
@@ -61,7 +68,6 @@ func (s *Server) Start() {
 
 		}
 	}()
-
 }
 
 func (s *Server) Stop() {
